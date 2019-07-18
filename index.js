@@ -9,7 +9,12 @@ const Sails = require("sails").Sails;
 
 async function startStop() {
   const sails = new Sails();
-  await sails.lift({ log: { noShip: true }, session: { secret: 'x' } });
+  await sails.lift({
+    hooks: {
+      session: false
+    },
+    log: { noShip: true },
+  });
   await sails.lower();
 }
 
