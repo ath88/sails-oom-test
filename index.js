@@ -8,14 +8,29 @@ const Sails = require("sails").Sails;
 })();
 
 async function startStop() {
-  const sails = new Sails();
-  await sails.lift({
-    hooks: {
-      session: false
-    },
-    log: { noShip: true },
-  });
-  await sails.lower();
+  await (
+    new Promise((resolve, reject)=>{
+      const sails = new Sails();
+      sails.lift({
+        hooks: {
+          session: false
+        },
+        log: { noShip: true },
+      }, (err)=>{
+        if (err) {
+          reject(Object.assign(new Error('Failed to lift.  See .raw.'), {raw:err}));
+          return;
+        }//•
+        sails.lower((err)=>{
+          if (err) {
+            reject(Object.assign(new Error('Failed to lower.  See .raw.'), {raw:err}));
+            return;
+          }//•
+          resolve();
+        });//_∏_
+      });//_∏_
+    });//_∏_
+  );
 }
 
 function printUsage() {
